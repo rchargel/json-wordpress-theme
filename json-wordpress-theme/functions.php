@@ -77,7 +77,7 @@ function make_page_array($parent_id = 0) {
 
   $pages = get_pages("sort_column=menu_order,post_date&child_of=$parent_id");
   if (isset($pages)) {
-    $pstr = '{"date":"%s","title":"%s","url":"%s","id":%s,"guid":"%s","menu_order":%s,"attachments":%s,"children":%s},';
+    $pstr = '{"date":"%s","title":"%s","url":"%s","id":%s,"slug":"%s","guid":"%s","menu_order":%s,"attachments":%s,"children":%s},';
     $frmt = get_option('date_format');
     foreach ($pages as $page) {
       $pid = $page->ID;
@@ -88,7 +88,7 @@ function make_page_array($parent_id = 0) {
       $attachments = make_attachment_array($pid);
       $children = make_page_array($pid);
 
-      $output .= sprintf($pstr, $date, $title, $url, $pid, $page->guid, $menu_order, $attachments, $children);
+      $output .= sprintf($pstr, $date, $title, $url, $pid, $page->post_name, $page->guid, $menu_order, $attachments, $children);
     }
     $output = substr($output, 0, -1);
   }
@@ -104,7 +104,7 @@ function make_post_array($excerpt = false) {
   $output = '';
   if (have_posts()) {
     $frmt = get_option('date_format');
-    $pstr = '{"author":{"name":"%s","url":"%s","email":"%s"},"date":"%s","gmt_date":"%s","title":"%s","categories":%s,"type":"%s","id":%s,"guid":"%s","url":"%s","attachments":%s,"content":"%s"},';
+    $pstr = '{"author":{"name":"%s","url":"%s","email":"%s"},"date":"%s","gmt_date":"%s","title":"%s","categories":%s,"type":"%s","id":%s,"slug":"%s","guid":"%s","url":"%s","attachments":%s,"content":"%s"},';
     while (have_posts()) {
       the_post();
       global $authordata;
@@ -126,7 +126,7 @@ function make_post_array($excerpt = false) {
       $dateStr = get_the_time($frmt, $pid);
       $timestamp = strtotime(get_the_time('D, d M Y H:i:s O', $pid));
   
-      $output .= sprintf($pstr, $author, $author_url, $author_email, $dateStr, gmdate('D, d M Y H:i:s O', $timestamp), $title, $categories, get_post_type($pid), get_the_ID(), $post->guid, $url,make_attachment_array($pid), $content);
+      $output .= sprintf($pstr, $author, $author_url, $author_email, $dateStr, gmdate('D, d M Y H:i:s O', $timestamp), $title, $categories, get_post_type($pid), get_the_ID(), $post->post_name, $post->guid, $url,make_attachment_array($pid), $content);
     }
     $output = substr($output, 0, -1);
   };
