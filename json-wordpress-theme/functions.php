@@ -67,7 +67,7 @@ function make_category_array($post_id = 0) {
   $output = '';
   
   foreach((get_the_category($post_id)) as $category) {
-    $output = '{"id":'.$category->cat_ID.',"name":"'.$category->cat_name.'","description":"'.$category->category_description.'"},';
+    $output = '{"id":'.$category->cat_ID.',"name":"'.$category->cat_name.'","slug":"'.$category->slug.'","description":"'.$category->category_description.'"},';
   }
   return '['.substr($output,0,-1).']';
 }
