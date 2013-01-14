@@ -6,11 +6,11 @@ if (is_page() && have_posts()) {
     global $id;
     $page = get_page($id);
     if (isset($page)) {
-      $pstr = '"page":{"id":%s,"date":"%s","title":"%s","comment_status":"%s","ping_status":"%s","comment_count":%s,"children":%s,"comments":%s,"attachments":%s,"content":"%s"},';
+      $pstr = '"page":{"id":%s,"slug":"%s","date":"%s","title":"%s","comment_status":"%s","ping_status":"%s","comment_count":%s,"children":%s,"comments":%s,"attachments":%s,"content":"%s"},';
       $frmt = get_option('date_format');
 
       $content = fix_quotes(trim(apply_filters("the_content", get_the_content($id))));
-      printf($pstr, $id, get_the_time($frmt, $id), $page->post_title, $page->comment_status, $page->ping_status, $page->comment_count, make_page_array($id), make_comment_array($id), make_attachment_array($id), $content);
+      printf($pstr, $id, $page->post_name, get_the_time($frmt, $id), $page->post_title, $page->comment_status, $page->ping_status, $page->comment_count, make_page_array($id), make_comment_array($id), make_attachment_array($id), $content);
     } else {
       echo '"page":{"error":404,"message":"Page not found"},';
     }
