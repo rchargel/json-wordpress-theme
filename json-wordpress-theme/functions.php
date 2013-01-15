@@ -12,7 +12,7 @@ function make_link($name, $url, $props = null) {
 
 function fix_quotes($str = '') {
   $str = str_replace('"', '\"', $str);
-  $str = str_replace("\n", ' ', $str);
+  $str = str_replace("\n", '\\n', $str);
   return str_replace("\r", ' ', $str);
 }
 
