@@ -1,4 +1,6 @@
 <?php
+include_once('geshi/geshi.php');
+
 function make_link($name, $url, $props = null) {
   $name = trim($name);
   $str = sprintf('"name":"%s","url":"%s"', $name, $url);
@@ -13,8 +15,37 @@ function make_link($name, $url, $props = null) {
 function fix_quotes($str = '') {
   $str = str_replace('"', '\"', $str);
   $str = str_replace("\n", '\\n', $str);
+  $str = str_replace("&#8211;", '--', $str);
   return str_replace("\r", ' ', $str);
 }
+
+function jwt_stripslashes($code){
+  $code=str_replace('\\"', '"',$code);
+  return $code;
+}
+
+function style_codeblocks($str) {
+  return preg_replace('/<pre(.*?)>(.*?)<\/pre>/ise', "parse_unknown_codeblock(jwt_stripslashes('$1'), jwt_stripslashes('$2'))", $str);
+}
+
+function parse_unknown_codeblock($attrs, $content) {
+  if (strlen($attrs) != 0 && strpos($attrs, 'lang') > -1) {
+     $lang = trim(preg_replace('/lang="(.*?)"/i', "$1", $attrs));
+     return parse_code($content, $lang);
+  }
+  return "<pre${attrs}>${content}</pre>";
+}
+
+function parse_code($code, $language) {
+  $geshi = new GeSHi($code, $language);
+  $geshi->enable_classes();
+  $geshi->set_header_type(GESHI_HEADER_DIV);
+  $geshi->set_overall_class('code_style');
+  $geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+  return $geshi->parse_code();
+}
+
+add_filter('the_content', 'style_codeblocks', 2);
 
 function make_attachment_array($post_id = 0) {
   $output = '';
